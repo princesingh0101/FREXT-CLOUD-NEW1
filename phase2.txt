@@ -1,0 +1,204 @@
+# FrextCloud – Phase 2 (Developer Deployment Platform)
+
+## Objective
+
+Upgrade FrextCloud from a **basic static hosting MVP** to a **developer-friendly deployment platform** similar to modern developer hosting platforms.
+
+Phase 2 will introduce automation and runtime support so developers can deploy applications directly from Git repositories.
+
+---
+
+# Phase 2 Core Features
+
+## 1. GitHub Integration
+
+Allow users to connect their GitHub accounts and deploy projects directly from repositories.
+
+### Workflow
+
+1. User connects GitHub account.
+2. FrextCloud lists user repositories.
+3. User selects a repository.
+4. FrextCloud automatically builds and deploys the project.
+
+Example deploy flow:
+
+```
+GitHub Repo
+   ↓
+FrextCloud Build System
+   ↓
+Docker Container
+   ↓
+Nginx Reverse Proxy
+   ↓
+live.frextcloud.com
+```
+
+---
+
+## 2. Automatic Deployments
+
+When a user pushes code to GitHub, the system automatically redeploys the application.
+
+Example flow:
+
+```
+git push origin main
+      ↓
+GitHub Webhook
+      ↓
+FrextCloud Build Trigger
+      ↓
+Build Container
+      ↓
+Deploy Updated Version
+```
+
+Deployment logs should be visible in the dashboard.
+
+---
+
+# Backend Runtime Support
+
+Phase 2 will support server-side applications.
+
+Supported runtimes:
+
+### Node.js
+
+Used for APIs and web apps.
+
+Example:
+
+```
+npm install
+npm run build
+npm start
+```
+
+### Python
+
+Support basic Python frameworks.
+
+Example:
+
+```
+pip install -r requirements.txt
+python app.py
+```
+
+---
+
+# Environment Variables
+
+Users should be able to configure environment variables from the dashboard.
+
+Example variables:
+
+```
+DATABASE_URL
+API_KEY
+JWT_SECRET
+NODE_ENV
+```
+
+These variables should be injected into containers during deployment.
+
+---
+
+# Deployment Logs
+
+Each deployment should generate logs.
+
+Example log:
+
+```
+Cloning repository...
+Installing dependencies...
+Running build script...
+Starting container...
+Deployment successful
+```
+
+Logs should be visible inside the dashboard.
+
+---
+
+# Database Updates
+
+Add new tables to support Git integration and deployments.
+
+## Repositories
+
+```
+id
+user_id
+repo_name
+provider
+connected_at
+```
+
+## Deployments
+
+```
+id
+project_id
+status
+logs
+created_at
+commit_hash
+```
+
+Deployment statuses:
+
+```
+building
+deploying
+live
+failed
+```
+
+---
+
+# API Endpoints
+
+## Git Integration
+
+```
+POST /github/connect
+GET /github/repos
+POST /github/deploy
+```
+
+## Deployments
+
+```
+GET /deployments
+GET /deployments/:id
+GET /deployments/:id/logs
+```
+
+---
+
+# Infrastructure Improvements
+
+Phase 2 infrastructure should support dynamic application builds.
+
+Required tools:
+
+```
+Docker
+Docker Compose
+Node Runtime
+Python Runtime
+Nginx Reverse Proxy
+```
+
+Example container flow:
+
+```
+GitHub Repo
+ ↓
+Build Co
+```

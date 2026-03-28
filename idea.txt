@@ -1,0 +1,557 @@
+# FrextCloud – Phase 1 (Core Hosting Hub)
+
+## Goal
+
+Build and launch a **minimal viable hosting platform** similar to Hostinger/Vercel where users can:
+
+* Sign up / log in
+* Upload and deploy **static websites** (HTML, CSS, JS, React build, Next.js static export)
+* Receive a **free subdomain** like:
+
+```
+myapp.frextcloud.com
+```
+
+* Manage their projects inside a **dashboard**
+
+This phase focuses on **simplicity and fast deployment**.
+No Git integration, no custom domains yet.
+
+**Target Timeline:** 2–4 weeks
+
+---
+
+# Platform Overview
+
+FrextCloud Phase 1 will act as a **basic static site hosting platform**.
+
+Users will be able to:
+
+* Create projects
+* Upload ZIP files containing website builds
+* Automatically deploy them
+* Access them via subdomain
+
+Example live URL:
+
+```
+https://myapp.frextcloud.com
+```
+
+---
+
+# Core Pages to Build
+
+## 1. Home Page
+
+Landing page introducing FrextCloud.
+
+Sections:
+
+* Hero section
+
+  * Title: **Deploy websites in seconds**
+  * Subtitle explaining simple hosting
+
+* Features preview:
+
+  * One-click deploy
+  * Free subdomain
+  * Auto SSL
+  * Fast global hosting
+
+* Pricing preview
+
+* Call-to-action buttons:
+
+  * Start Deploying
+  * Sign Up
+
+* Footer
+
+---
+
+## 2. Pricing Page
+
+Initial pricing layout.
+
+Example plans:
+
+### Free
+
+* 1 project
+* 1 GB storage
+* FrextCloud subdomain
+
+### Pro (mock for now)
+
+* 10 projects
+* 10 GB storage
+* priority support
+
+### Business (mock)
+
+---
+
+## 3. Docs Page
+
+Simple documentation explaining deployment.
+
+Sections:
+
+* How to deploy
+* Supported site types
+* FAQ
+
+Example instructions:
+
+1. Build your site
+2. Download build folder
+3. Zip files
+4. Upload to FrextCloud
+
+---
+
+## 4. Register / Login
+
+Authentication system.
+
+Methods:
+
+* Email + Password
+* Google OAuth
+
+After login → redirect to dashboard.
+
+---
+
+## 5. Dashboard
+
+User control panel.
+
+Features:
+
+* List projects
+* Deploy new project
+* View project URLs
+* View deployment status
+
+Example project card:
+
+```
+Project: myapp
+URL: myapp.frextcloud.com
+Status: Live
+```
+
+Buttons:
+
+* Deploy
+* View
+* Delete
+
+---
+
+## 6. Deploy Page
+
+Page where users deploy websites.
+
+Workflow:
+
+1. Enter project name
+2. Upload ZIP file
+3. Click Deploy
+
+Example:
+
+```
+Project name: myapp
+Upload: myapp.zip
+```
+
+After deploy:
+
+```
+Live URL: myapp.frextcloud.com
+Status: Building → Live
+```
+
+---
+
+# Example User Flow
+
+1. User registers account
+2. User enters dashboard
+3. Clicks **New Project**
+4. Names project:
+
+```
+myapp
+```
+
+5. Uploads ZIP file containing build
+
+System performs:
+
+```
+Extract ZIP
+Build Docker container
+Start container
+Configure Nginx
+Generate SSL
+```
+
+Final result:
+
+```
+https://myapp.frextcloud.com
+```
+
+---
+
+# Technology Stack
+
+## Frontend
+
+Framework:
+
+```
+Next.js 14
+```
+
+UI:
+
+```
+Tailwind CSS
+shadcn/ui
+```
+
+Features:
+
+* Dashboard UI
+* Upload interface
+* Project cards
+* Deployment status
+
+---
+
+## Backend
+
+Framework:
+
+```
+NestJS
+```
+
+Responsibilities:
+
+* Authentication
+* Project management
+* Deployment control
+* API handling
+
+Authentication:
+
+```
+JWT
+```
+
+---
+
+## Database
+
+Primary database:
+
+```
+PostgreSQL
+```
+
+Cache / session:
+
+```
+Redis
+```
+
+---
+
+# Infrastructure
+
+Server:
+
+```
+Ubuntu VPS
+```
+
+Recommended providers:
+
+* DigitalOcean
+* AWS Lightsail
+* Hetzner
+
+Minimum specs:
+
+```
+2GB RAM
+2 CPU
+```
+
+---
+
+# Deployment System
+
+Deployment process:
+
+```
+ZIP upload
+↓
+Extract files
+↓
+Build Docker container
+↓
+Run container
+↓
+Assign subdomain
+↓
+Configure Nginx
+↓
+Enable SSL
+```
+
+Example container mapping:
+
+```
+myapp → container port 8080
+```
+
+---
+
+# Docker Setup
+
+Each project runs inside its own container.
+
+Example Dockerfile:
+
+```
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
+EXPOSE 80
+```
+
+---
+
+# Nginx Reverse Proxy
+
+Handles subdomain routing.
+
+Example configuration:
+
+```
+server {
+    server_name myapp.frextcloud.com;
+
+    location / {
+        proxy_pass http://localhost:8080;
+    }
+}
+```
+
+Wildcard routing will allow unlimited subdomains.
+
+---
+
+# SSL Configuration
+
+Automatic HTTPS using:
+
+```
+Let's Encrypt
+Certbot
+```
+
+Each project will automatically receive SSL.
+
+Example:
+
+```
+https://myapp.frextcloud.com
+```
+
+---
+
+# Database Schema
+
+## Users Table
+
+```
+id
+email
+password_hash
+created_at
+```
+
+---
+
+## Projects Table
+
+```
+id
+user_id
+name
+subdomain
+status
+storage_used
+created_at
+```
+
+Status values:
+
+```
+building
+live
+error
+```
+
+---
+
+# API Endpoints
+
+## Authentication
+
+```
+POST /auth/register
+POST /auth/login
+GET /auth/me
+```
+
+---
+
+## Projects
+
+```
+GET /projects
+POST /projects
+DELETE /projects/:id
+```
+
+---
+
+## Deployment
+
+```
+POST /deploy
+GET /deploy/:id/logs
+```
+
+---
+
+# DNS Setup (Important)
+
+Purchase domain:
+
+```
+frextcloud.com
+```
+
+Use DNS provider:
+
+Cloudflare
+
+DNS records:
+
+```
+A record
+frextcloud.com → server IP
+```
+
+Wildcard record:
+
+```
+*.frextcloud.com → server IP
+```
+
+This allows unlimited subdomains.
+
+---
+
+# Success Metrics
+
+Phase 1 will be considered successful if:
+
+* A React or static site can deploy in **under 2 minutes**
+* Dashboard displays deployed projects
+* URLs are publicly accessible
+* At least **10 beta users** test the platform
+
+---
+
+# Phase 2 Roadmap
+
+Future features:
+
+* GitHub auto-deploy
+* Node.js hosting
+* Python support
+* build logs
+* environment variables
+
+---
+
+# Phase 3 Roadmap
+
+Advanced platform features:
+
+* Custom domains
+* Paid billing plans
+* CDN support
+* edge deployments
+* global infrastructure
+
+---
+
+# Initial Cost Estimate
+
+Infrastructure costs:
+
+```
+VPS: $5/month
+Domain: $10/year
+Cloudflare: Free
+```
+
+Total startup cost:
+
+```
+≈ $5/month
+```
+
+---
+
+# MVP Philosophy
+
+Focus on launching **a working product quickly**.
+
+Goal:
+
+```
+Working deploy platform
+Not a perfect platform
+```
+
+Launch early → improve later.
+
+---
+
+# FrextCloud Vision
+
+FrextCloud aims to become a **developer-first hosting platform** enabling anyone to deploy websites instantly.
+
+Future expansion may include:
+
+* serverless functions
+* object storage
+* AI deployment
+* global edge hosting
+
+---
+
+**End of Phase 1 MVP Plan**
